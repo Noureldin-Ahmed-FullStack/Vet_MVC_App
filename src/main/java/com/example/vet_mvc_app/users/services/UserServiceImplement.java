@@ -2,18 +2,20 @@ package com.example.vet_mvc_app.users.services;
 
 import com.example.vet_mvc_app.users.Repository.UserRepository;
 import com.example.vet_mvc_app.users.dto.CreateUserRequest;
-import com.example.vet_mvc_app.users.dto.UserResponse;
 import com.example.vet_mvc_app.users.entity.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserServiceImplement implements UserService {
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public UserServiceImplement(UserRepository userRepository) {
+    public UserServiceImplement(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class UserServiceImplement implements UserService {
         User user = new User(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
+                passwordEncoder.encode(request.getPassword())
         );
         userRepository.save(user);
         return "User created successfully";

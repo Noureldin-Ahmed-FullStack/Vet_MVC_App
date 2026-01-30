@@ -1,9 +1,12 @@
 package com.example.vet_mvc_app.users.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -11,6 +14,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "user", schema = "vetmvc")
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,18 +24,23 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Email
     @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ColumnDefault("'user'")
-    @Lob
-    @Column(name = "role", nullable = false)
-    private String role;
+    public enum Role {
+        user,
+        vet,
+        admin
+    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.user; // ✅ DEFAULT HERE
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 

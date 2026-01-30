@@ -2,11 +2,14 @@ package com.example.vet_mvc_app.users.Repository;
 
 import com.example.vet_mvc_app.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface UserRepository extends JpaRepository<User, Long>  {
-    List<User> findAllUsers();
-    User findByEmail(String email);
+    List<User> findAll();
+    Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
 }

@@ -1,3 +1,4 @@
+
 create table user
 (
     id         bigint auto_increment
