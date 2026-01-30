@@ -2,11 +2,13 @@ package com.example.vet_mvc_app.users.services;
 
 import com.example.vet_mvc_app.users.Repository.UserRepository;
 import com.example.vet_mvc_app.users.dto.CreateUserRequest;
+import com.example.vet_mvc_app.users.dto.UserResponse;
 import com.example.vet_mvc_app.users.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplement implements UserService {
@@ -19,8 +21,14 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return this.userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        List<User> users = this.userRepository.findAll();
+        return users.stream().map(user -> new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole()
+        )).collect(Collectors.toList());
     }
 
     @Override

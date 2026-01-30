@@ -1,6 +1,7 @@
 package com.example.vet_mvc_app.users.controller;
 
 import com.example.vet_mvc_app.users.dto.CreateUserRequest;
+import com.example.vet_mvc_app.users.dto.UserResponse;
 import com.example.vet_mvc_app.users.entity.User;
 import com.example.vet_mvc_app.users.services.UserService;
 import jakarta.validation.Valid;
@@ -33,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
+        List<UserResponse> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

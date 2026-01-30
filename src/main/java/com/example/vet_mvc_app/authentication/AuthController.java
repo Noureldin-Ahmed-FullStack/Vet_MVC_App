@@ -1,40 +1,44 @@
 package com.example.vet_mvc_app.authentication;
-
+import com.example.vet_mvc_app.authentication.JWT.JwtService;
+import com.example.vet_mvc_app.authentication.dto.AuthResponse;
 import com.example.vet_mvc_app.authentication.dto.LoginRequest;
-import com.example.vet_mvc_app.users.Repository.UserRepository;
-import com.example.vet_mvc_app.users.entity.User;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/api/auth")
+@AllArgsConstructor
 public class AuthController {
 
+    private JwtService jwtService;
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
+    public ResponseEntity<?> login(
             @RequestBody @Valid LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        return ResponseEntity.ok().build();
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword())
+            );
+
+        String token = jwtService.generateToken(request.getEmail());
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "message", "Login successful"
+        ));
     }
 }

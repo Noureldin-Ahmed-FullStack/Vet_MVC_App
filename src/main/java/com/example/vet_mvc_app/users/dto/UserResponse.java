@@ -1,18 +1,23 @@
 package com.example.vet_mvc_app.users.dto;
 
+
+import com.example.vet_mvc_app.users.entity.User;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.Instant;
 
 @Getter
 public class UserResponse {
     private Long id;
-    @Setter
     private String name;
-    @Setter
     private String email;
-    @Setter
-    private String role;
+    private User.Role role;
     private Instant created_at;
+
+    public UserResponse(Long id, String name, String email, User.Role role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
 }
